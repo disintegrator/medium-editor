@@ -605,13 +605,15 @@
                 middleBoundary = (boundary.left + boundary.right) / 2,
                 toolbarElement = this.getToolbarElement(),
                 toolbarHeight = toolbarElement.offsetHeight,
-                toolbarWidth = toolbarElement.offsetWidth,
+                toolbarWidth = parseFloat(this.window.getComputedStyle(toolbarElement).width),
                 halfOffsetWidth = toolbarWidth / 2,
                 buttonHeight = 50,
                 defaultLeft = this.diffLeft - halfOffsetWidth,
                 offsetParent = toolbarElement.offsetParent,
+                parentWidth = parseFloat(this.window.getComputedStyle(offsetParent).width),
                 parentBoundary = offsetParent.getBoundingClientRect(),
-                yOffset = parentBoundary.top + offsetParent.scrollTop;
+                yOffset = parentBoundary.top + offsetParent.scrollTop,
+                maxLeft = Math.floor(parentWidth - toolbarWidth);
 
             if (boundary.top < buttonHeight) {
                 toolbarElement.classList.add('medium-toolbar-arrow-over');
@@ -628,7 +630,7 @@
             } else if ((windowWidth - middleBoundary) < halfOffsetWidth) {
                 toolbarElement.style.left = windowWidth + defaultLeft - halfOffsetWidth + 'px';
             } else {
-                toolbarElement.style.left = defaultLeft + middleBoundary + 'px';
+                toolbarElement.style.left = Math.max(0, Math.min(maxLeft, defaultLeft + middleBoundary - parentBoundary.left)) + 'px';
             }
         }
     });
